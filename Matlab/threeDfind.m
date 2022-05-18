@@ -1,10 +1,16 @@
-function [roixyz] = threeDfind(scanname,value)
+function [roixyz] = threeDfind(scanname,value,direction)
 
 %--------------------------------------------------------------------------
-%returns coordinates above a value
+%returns coordinates that above value
 %
-%LDdeVoogd2013
+%lddevoogd2013
+%
+%2021: added direction
+%1=equal
+%2-bigger
+%3=smaller
 %--------------------------------------------------------------------------
+
 
 %read in ROI
 hdr_roitemp=spm_vol(scanname);
@@ -23,9 +29,18 @@ end
 for zz=1:hdr_roitemp.dim(3)
     zzsv(:,:,zz)=zz;
 end
-roixx=xxsv(data_roitemp==value);
-roiyy=yysv(data_roitemp==value);
-roizz=zzsv(data_roitemp==value);
 
-%list of coordinates
+if direction == 1 %equal
+    roixx=xxsv(data_roitemp==value);
+    roiyy=yysv(data_roitemp==value);
+    roizz=zzsv(data_roitemp==value);
+elseif direction ==2 %bigger
+    roixx=xxsv(data_roitemp>value);
+    roiyy=yysv(data_roitemp>value);
+    roizz=zzsv(data_roitemp>value);
+elseif direction==3 %smaller
+    roixx=xxsv(data_roitemp<value);
+    roiyy=yysv(data_roitemp<value);
+    roizz=zzsv(data_roitemp<value);
+end
 roixyz=[roixx,roiyy,roizz,ones(size(roixx,1),1)]';
